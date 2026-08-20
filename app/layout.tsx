@@ -25,9 +25,28 @@ export const metadata: Metadata = {
   }
 };
 
+const gaId = process.env.NEXT_PUBLIC_GA_ID;
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" data-theme="dark">
+      <head>
+        {gaId ? (
+          <>
+            <script async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} />
+            <script
+              dangerouslySetInnerHTML={{
+                __html: `
+                  window.dataLayer = window.dataLayer || [];
+                  function gtag(){dataLayer.push(arguments);}
+                  gtag('js', new Date());
+                  gtag('config', ${JSON.stringify(gaId)});
+                `
+              }}
+            />
+          </>
+        ) : null}
+      </head>
       <body>
         <Header />
         <main id="main-content">{children}</main>
